@@ -10,3 +10,6 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     
     model_config=SettingsConfigDict(env_file='.env')
+    
+    
+settings = Settings()
