@@ -9,4 +9,4 @@ class SUserRegistration(BaseModel):
 
 class SUserLogin(BaseModel):
     email: EmailStr = Field(min_length=10)
-    password: str
+    password: str = Field(min_length=8, max_length=40)
