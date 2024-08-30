@@ -1,6 +1,8 @@
-from fastapi import APIRouter
+from datetime import date
+from fastapi import APIRouter, Depends
 
 from app.notes.dao import NotesDAO
+
 
 router = APIRouter(
     prefix="/notes",
@@ -30,3 +32,7 @@ async def get_note_by_id(note_id: int):
         return "Ошибочка вышла"
     
     return note
+
+# @router.post("/create")
+# async def create_note(note: str, deadline: date, user = Depends(get_current_user)):
+#     new_note = NotesDAO.add(user_id=user.id, note=note, deadline=deadline)

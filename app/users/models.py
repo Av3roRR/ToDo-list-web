@@ -10,4 +10,4 @@ class Users(Base):
     name: Mapped[str]
     surname: Mapped[str]
     email: Mapped[str]
-    hashed_password: Mapped[str]
+    password: Mapped[str]
