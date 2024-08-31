@@ -2,7 +2,7 @@ from datetime import date
 from fastapi import APIRouter, Depends
 
 from app.notes.dao import NotesDAO
-
+from app.users.dependencies import get_current_user
 
 router = APIRouter(
     prefix="/notes",
@@ -19,12 +19,13 @@ async def get_notes():
 
 
 
-"""
-В будущем добавлю чтобы была проверка на user и искала в БД
-find_all(user_id=user.id, id=note_id)
-а входные данные
-async def get_note_by_id(note_id: int, user=Depends(get_current_user))
-"""
+# В будущем добавлю чтобы была проверка на user и искала в БД
+# find_all(user_id=user.id, id=note_id)
+# а входные данные
+# async def get_note_by_id(note_id: int, user=Depends(get_current_user))
+# upd: думаю что можно просто при нажатии на условную карточку с задачей передавать её id и просто 
+# получать данные, поэтому я просто отказался от идеи
+
 @router.get("/{note_id}")
 async def get_note_by_id(note_id: int):
     note = await NotesDAO.find_one_or_none(id=note_id)
@@ -33,6 +34,7 @@ async def get_note_by_id(note_id: int):
     
     return note
 
-# @router.post("/create")
-# async def create_note(note: str, deadline: date, user = Depends(get_current_user)):
-#     new_note = NotesDAO.add(user_id=user.id, note=note, deadline=deadline)
+@router.post("/create_note")
+async def create_note(note: str, deadline: date, user = Depends(get_current_user)) -> None:
+    new_note = await NotesDAO.add(user_id=user.id, note=note, deadline=str(deadline))
+    print(new_note.deadline)
