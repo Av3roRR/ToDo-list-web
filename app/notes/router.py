@@ -1,10 +1,13 @@
 from datetime import date
 from fastapi import APIRouter, Depends
 from fastapi_cache.decorator import cache
-import asyncio
+from pydantic import TypeAdapter
+
 
 from app.notes.dao import NotesDAO
 from app.users.dependencies import get_current_user
+from app.notes.schemas import SNote
+from app.tasks.tasks import send_reminder
 
 router = APIRouter(
     prefix="/notes",
@@ -31,4 +34,6 @@ async def get_note_by_id(note_id: int):
 @router.post("/create_note")
 async def create_note(note: str, deadline: date, user = Depends(get_current_user)) -> None:
     new_note = await NotesDAO.add(user_id=user.id, note=note, deadline=str(deadline))
-    print(new_note.deadline)
+    new_note_dict = TypeAdapter(SNote).validate_python(new_note).model_dump()
+    
+    send_reminder.delay(new_note_dict, user.email)

@@ -9,6 +9,14 @@ class Settings(BaseSettings):
     DB_DRIVER: str
     DATABASE_URL: str
     
+    SMTP_HOST: str
+    SMTP_PORT: int
+    SMTP_USER: str
+    SMTP_PASS: str
+    
+    REDIS_HOST: str
+    REDIS_PORT: int
+    
     SECRET_KEY: str
     HASH_ALGO: str
     
