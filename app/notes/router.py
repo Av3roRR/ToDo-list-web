@@ -1,5 +1,7 @@
 from datetime import date
 from fastapi import APIRouter, Depends
+from fastapi_cache.decorator import cache
+import asyncio
 
 from app.notes.dao import NotesDAO
 from app.users.dependencies import get_current_user
@@ -17,16 +19,8 @@ async def get_notes():
 
     return notes
 
-
-
-# В будущем добавлю чтобы была проверка на user и искала в БД
-# find_all(user_id=user.id, id=note_id)
-# а входные данные
-# async def get_note_by_id(note_id: int, user=Depends(get_current_user))
-# upd: думаю что можно просто при нажатии на условную карточку с задачей передавать её id и просто 
-# получать данные, поэтому я просто отказался от идеи
-
 @router.get("/{note_id}")
+@cache(expire=20)
 async def get_note_by_id(note_id: int):
     note = await NotesDAO.find_one_or_none(id=note_id)
     if note is None:
